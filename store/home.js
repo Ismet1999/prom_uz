@@ -12,7 +12,8 @@ export const mutations = {
 export const actions = {
   FETCH_BOOKS({ commit }, data) {
     return new Promise((resolve, reject) => {
-      fetchBooksByTitle(data)
+      fetchBooksByTitle
+        .call(this, data)
         .then((r) => {
           commit('SET_BOOK_LIST', r.items)
           resolve(r)

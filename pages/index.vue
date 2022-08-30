@@ -1,18 +1,26 @@
 <template>
   <div>
     <div class="p-2">
-      <BFormInput placeholder="Enter a book title" />
+      <BFormInput
+        v-model="search"
+        placeholder="Enter a book title"
+        @input="searchBooks"
+      />
     </div>
-
     <div class="p-2">
       <BCard no-body>
         <BTable
+          show-empty
           responsive
           striped
           hover
           :items="books"
           :fields="fields"
-        ></BTable>
+        >
+          <template #cell(image)="props">
+            <img :src="getBookImage(props.item)" width="100" />
+          </template>
+        </BTable>
       </BCard>
     </div>
   </div>
@@ -31,12 +39,15 @@ export default {
           label: 'Image',
         },
         {
-          key: 'title',
+          key: 'volumeInfo.title',
           label: 'Title',
         },
         {
-          key: 'author',
-          label: 'Author',
+          key: 'volumeInfo.authors',
+          label: 'Authors',
+          formatter: (value) => {
+            return value && value.join(', ')
+          },
         },
       ],
     }
@@ -47,18 +58,20 @@ export default {
     },
   },
   methods: {
-    getBooks() {
-      if (this.search.length > 2) {
-        const req = {
-          params: {
-            q: this.search,
-          },
-        }
-        this.timeOut = setTimeout(() => {
-          clearTimeout(this.timeOut)
-          this.$store.dispatch('home/FETCH_BOOKS', req)
-        }, 300)
+    searchBooks() {
+      const req = {
+        params: {
+          q: this.search,
+        },
       }
+
+      clearTimeout(this.timeOut)
+      this.timeOut = setTimeout(() => {
+        this.$store.dispatch('home/FETCH_BOOKS', req)
+      }, 500)
+    },
+    getBookImage(val) {
+      return val?.volumeInfo?.imageLinks?.smallThumbnail
     },
   },
 }
