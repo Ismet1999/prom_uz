@@ -10,7 +10,7 @@
           responsive
           striped
           hover
-          :items="items"
+          :items="books"
           :fields="fields"
         ></BTable>
       </BCard>
@@ -23,14 +23,8 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      items: [
-        {
-          id: 1,
-          title: 'Harry Potter',
-          author: 'J.K. Rowling',
-          year: '1997',
-        },
-      ],
+      search: '',
+      timeOut: null,
       fields: [
         {
           key: 'image',
@@ -46,6 +40,26 @@ export default {
         },
       ],
     }
+  },
+  computed: {
+    books() {
+      return this.$store.state.home.books
+    },
+  },
+  methods: {
+    getBooks() {
+      if (this.search.length > 2) {
+        const req = {
+          params: {
+            q: this.search,
+          },
+        }
+        this.timeOut = setTimeout(() => {
+          clearTimeout(this.timeOut)
+          this.$store.dispatch('home/FETCH_BOOKS', req)
+        }, 300)
+      }
+    },
   },
 }
 </script>
