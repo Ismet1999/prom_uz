@@ -54,20 +54,18 @@ export default {
   },
   computed: {
     books() {
-      return this.$store.state.home.books
+      return this.$store.state.books.books
     },
   },
   methods: {
     searchBooks() {
       const req = {
-        params: {
-          q: this.search,
-        },
+        q: this.search,
       }
 
       clearTimeout(this.timeOut)
       this.timeOut = setTimeout(() => {
-        this.$store.dispatch('home/FETCH_BOOKS', req)
+        this.$store.dispatch('books/FETCH_BOOKS', req)
       }, 500)
     },
     getBookImage(val) {

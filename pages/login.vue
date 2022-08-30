@@ -70,7 +70,29 @@ export default {
 
     logIn() {
       if (this.formState.state) {
-        this.$router.push('/')
+        const req = {
+          token: this.usernameToken,
+        }
+
+        this.$store
+          .dispatch('login/LOGIN', req)
+          .then(() => {
+            this.$router.push('/')
+            setTimeout(() => {
+              this.$bvToast.toast('Success', {
+                title: `Successful authorization `,
+                variant: 'success',
+                solid: true,
+              })
+            }, 0)
+          })
+          .catch(() => {
+            this.$bvToast.toast('Not valid Username token', {
+              title: `Error`,
+              variant: 'danger',
+              solid: true,
+            })
+          })
       }
     },
   },
